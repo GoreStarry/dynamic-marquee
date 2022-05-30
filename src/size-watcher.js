@@ -1,3 +1,5 @@
+import { ResizeObserver } from '@juggle/resize-observer';
+
 const PX_REGEX = /px$/;
 
 function pxStringToValue(input) {
@@ -12,15 +14,12 @@ export class SizeWatcher {
     this._$el = $el;
     this._width = null;
     this._height = null;
-    this._observer =
-      'ResizeObserver' in window
-        ? new ResizeObserver((entries) => {
-            const entry = entries[entries.length - 1];
-            const size = entry.borderBoxSize[0] || entry.borderBoxSize;
-            this._width = size.inlineSize;
-            this._height = size.blockSize;
-          })
-        : null;
+    this._observer = new ResizeObserver((entries) => {
+      const entry = entries[entries.length - 1];
+      const size = entry.borderBoxSize[0] || entry.borderBoxSize;
+      this._width = size.inlineSize;
+      this._height = size.blockSize;
+    });
 
     this._observer?.observe($el);
   }
